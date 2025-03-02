@@ -2,42 +2,47 @@
 #include <vector>
 #include <algorithm>
 using namespace std;
-//n is the mid
-//m is the desired val
-bool check(long long sh, long long wh[], long long n, long long g) {
-    long long result = 0;
-    for (long long i = 0; i<n; i++) {
-        long long w = 0;
-        if (wh[i] >= sh) w = wh[i] - sh;
-        result += w;
+
+bool check(long long n, long long m, long long arr[], long long d) {
+    long long prev_shed = 0;
+    for (long long i = 1; i < m; i++) {
+        long long curr_shed = prev_shed + 1;
+        while (curr_shed < n && (arr[curr_shed]-arr[prev_shed] < d)) {
+            curr_shed++;
+        } if (curr_shed >= n) {
+            return false;
+        }
+        prev_shed = curr_shed;
     }
-    if (result >= g) return true;
-    else return false;
+    return true;
 }
 
 
 
-int binarysearch(long long arr[], long long s, long long g, long long n) {
-    long long l = 0, r = s, ans = 0;
+int binarysearch(long long arr[], long long m, long long n) {
+    long long l = 0, r = 1000000000, ans = 0;
     while (l <= r) {
         long long mid = (l + r) / 2;
-        if (check(mid, arr, n, g)) { ans = mid; l = mid + 1; }
-        else r = mid - 1;
+        if (check(n, m, arr, mid)) {
+            ans = mid; l = mid + 1; 
+        } else {
+            r = mid - 1;
+        }
     }
     return ans;
 }
 
 int main() {
-    long long n, k, g;
-    cin >> n >> g;
+    long long n, k, m;
+    cin >> n >> m;
     vector<long long> arr;
     for (long long i = 0; i < n; i++) {
         cin >> k;
         arr.push_back(k);  
     }
-    long long s = *max_element(arr.begin(), arr.end());
+    sort(arr.begin(), arr.end());
     long long arry[n];
     copy(arr.begin(),arr.end(), arry);
-    cout << binarysearch(arry, s, g, n);
+    cout << binarysearch(arry, m, n);
     return 0;
 }

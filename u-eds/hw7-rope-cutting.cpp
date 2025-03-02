@@ -1,43 +1,46 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <cmath>
+#include <iomanip>
 using namespace std;
-//n is the mid
-//m is the desired val
-bool check(long long sh, long long wh[], long long n, long long g) {
-    long long result = 0;
-    for (long long i = 0; i<n; i++) {
-        long long w = 0;
-        if (wh[i] >= sh) w = wh[i] - sh;
-        result += w;
+
+bool check(int n, int k, double l, double arr[]){
+    int p = 0;
+    for (int i = 0; i < n; i++) {
+        int new_pieces = (int)(floor(arr[i]/l));
+        p += new_pieces;
+        if (p >= k) {
+            return true;
+        }
     }
-    if (result >= g) return true;
-    else return false;
+    return p >= k;
 }
 
 
 
-int binarysearch(long long arr[], long long s, long long g, long long n) {
-    long long l = 0, r = s, ans = 0;
-    while (l <= r) {
-        long long mid = (l + r) / 2;
-        if (check(mid, arr, n, g)) { ans = mid; l = mid + 1; }
-        else r = mid - 1;
+double binarysearch(double arr[], int k, int n) {
+    double l = 0, r = 100000, ans = 0;
+    while (r-l>1e-6) {
+        double mid = (l + r) / 2;
+        if (check(n, k, mid, arr)) {
+            ans = mid; l = mid; 
+        } else {
+            r = mid;
+        }
     }
     return ans;
 }
 
 int main() {
-    long long n, k, g;
-    cin >> n >> g;
-    vector<long long> arr;
-    for (long long i = 0; i < n; i++) {
-        cin >> k;
-        arr.push_back(k);  
+    int n, k;
+    double x;
+    cin >> n >> k;
+    double arr[n];
+    for (int i = 0; i < n; i++) {
+        cin >> x;
+        arr[i] = x;
     }
-    long long s = *max_element(arr.begin(), arr.end());
-    long long arry[n];
-    copy(arr.begin(),arr.end(), arry);
-    cout << binarysearch(arry, s, g, n);
+    cout << fixed << setprecision(2) << binarysearch(arr, k, n);
     return 0;
 }
