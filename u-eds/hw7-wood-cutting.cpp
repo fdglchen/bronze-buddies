@@ -1,29 +1,43 @@
 #include <iostream>
+#include <vector>
+#include <algorithm>
 using namespace std;
-
-int binarysearch(int m, int g) {
-    int l = 0, r = m, sec = 0;
-    while (l <= r) {
-        int mid = (l + r) / 2;
-        if (m - mid == g) return mid;
-        else if (m - mid > g) {
-            r = mid - 1;
-            sec = mid; 
-        } 
-        else {
-            l = mid + 1;
-        }
+//n is the mid
+//m is the desired val
+bool check(long long sh, long long wh[], long long n, long long g) {
+    long long result = 0;
+    for (long long i = 0; i<n; i++) {
+        long long w = 0;
+        if (wh[i] >= sh) w = wh[i] - sh;
+        result += w;
     }
-    return sec;
+    if (result >= g) return true;
+    else return false;
+}
+
+
+
+int binarysearch(long long arr[], long long s, long long g, long long n) {
+    long long l = 0, r = s, ans = 0;
+    while (l <= r) {
+        long long mid = (l + r) / 2;
+        if (check(mid, arr, n, g)) { ans = mid; l = mid + 1; }
+        else r = mid - 1;
+    }
+    return ans;
 }
 
 int main() {
-    int n, k, m = 0, g;
+    long long n, k, g;
     cin >> n >> g;
-    for (int i = 0; i < n; i++) {
+    vector<long long> arr;
+    for (long long i = 0; i < n; i++) {
         cin >> k;
-        m += k;  
+        arr.push_back(k);  
     }
-    cout << binarysearch(m, g);
+    long long s = *max_element(arr.begin(), arr.end());
+    long long arry[n];
+    copy(arr.begin(),arr.end(), arry);
+    cout << binarysearch(arry, s, g, n);
     return 0;
 }
